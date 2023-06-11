@@ -59,6 +59,7 @@ function chatcmd_parse_num(cmdparams,base_num)
   local parsed=0
   local sign
   local tilde
+  local count_digit=0
   if base_num then
     tilde,cmdparams=chatcmd_parse_expect(cmdparams,"~")
   end
@@ -69,12 +70,17 @@ function chatcmd_parse_num(cmdparams,base_num)
     parsed=parsed*10
     parsed=parsed+tonumber(string.sub(cmdparams,1,1))
     cmdparams=string.sub(cmdparams,2)
+    count_digit=count_digit+1
   end
   
   parsed=parsed*(sign and -1 or 1)
   
   if tilde then
     parsed=base_num+parsed
+  end
+
+  if count_digit == 0 then
+    parsed=nil
   end
   
   return parsed,cmdparams
@@ -196,7 +202,11 @@ test(" ( 1   , 2 ; 3 ) (~1,~-1,~1)    ")
 test(" ( 1   , 2   3 ) (~1,~-1,~1)    ")
 test(" ( 1   , 2 , 3   (~1,~-1,~1)    ")
 test(" ( 1   , 2 , 3 ) (~1,~-1,~1)    ")
+test(" ( 1  f, 2 , 3 ) (~1,~-1,~1)    ")
+test(" ( 1   ,g2 , 3 ) (~1,~-1,~1)    ")
 test(" ( 1     2   3 )  ~1,~-1,~1     ")
 test(" ( 1     2   3 )  ~1,~-1,~1   k ")
 test(" ( 1     2   3 ) u   ~-1,~1   k ")
 test(" ( 1  h  2   3 )  ~1,~-1,~1     ")
+test("abc")
+test("")
