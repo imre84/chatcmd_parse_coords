@@ -155,7 +155,7 @@ function chatcmd_parse_coords(cmdparams,base_pos)
   return result,cmdparams
 end
 
--- until further notice example code to test the library functions (user code, mode code):
+-- until further notice example code to test the library functions (user code, mod code):
 
 local function test0(s,base_pos)
   local output="input=\""..s.."\", output: "
