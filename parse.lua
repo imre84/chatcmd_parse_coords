@@ -33,16 +33,9 @@ end
 -- until further notice proposed library functions follow:
 
 function is_digit(c)
-  return c=="0" or
-         c=="1" or
-         c=="2" or
-         c=="3" or
-         c=="4" or
-         c=="5" or
-         c=="6" or
-         c=="7" or
-         c=="8" or
-         c=="9"
+  return #c == 1 and
+         c >= "0" and
+         c <= "9"
 end
 
 function chatcmd_parse_ws(cmdparams)
@@ -212,3 +205,4 @@ test("abc")
 test("")
 test("  ")
 test(" ( 1     2   3 )   4,  5, 6     ")
+test("   123 456 789 111 -222 333")
