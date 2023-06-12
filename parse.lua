@@ -46,9 +46,19 @@ function chatcmd_parse_ws(cmdparams)
   return cmdparams
 end
 
+function chatcmd_parse_expect(cmdparams,expected)
+  cmdparams=chatcmd_parse_ws(cmdparams)
+  while cmdparams~="" and expected~="" and string.sub(cmdparams,1,1)==string.sub(expected,1,1)
+  do
+    cmdparams=string.sub(cmdparams,2)
+    expected=string.sub(expected,2)
+  end
+  return expected=="",cmdparams
+end
+
 --this one right now does only parse integer numbers (negative numbers and optional tilde notation included)
---TODO: could be improved to work with non-integer cmdparam numbers as well
-function chatcmd_parse_num(cmdparams,base_num)
+--TODO: could be improved to work with non-integer numbers as well
+function chatcmd_parse_num_OLD(cmdparams,base_num)
   local parsed=0
   local sign
   local tilde
@@ -79,14 +89,70 @@ function chatcmd_parse_num(cmdparams,base_num)
   return parsed,cmdparams
 end
 
-function chatcmd_parse_expect(cmdparams,expected)
-  cmdparams=chatcmd_parse_ws(cmdparams)
-  while cmdparams~="" and expected~="" and string.sub(cmdparams,1,1)==string.sub(expected,1,1)
-  do
-    cmdparams=string.sub(cmdparams,2)
-    expected=string.sub(expected,2)
+function chatcmd_parse_num_OLD2(cmdparams,base_num)
+  local tilde
+  if base_num then
+    tilde,cmdparams=chatcmd_parse_expect(cmdparams,"~")
   end
-  return expected=="",cmdparams
+
+  cmdparams=chatcmd_parse_ws(cmdparams)
+
+  if cmdparams=="" then
+    return nil,""
+  end
+
+  local max=0
+  local maxnum=nil
+
+  for i=1,#cmdparams do
+    local parsed=tonumber(string.sub(cmdparams,1,i))
+    if parsed ~= nil then
+      max=i
+      maxnum=parsed
+    end
+  end
+
+  if max == 0 then
+    return nil,cmdparams
+  end
+
+  if tilde then
+    maxnum=base_num+maxnum
+  end
+
+  return maxnum,string.sub(cmdparams,max+1)
+end
+
+function chatcmd_parse_num(cmdparams,base_num)
+  local tilde
+  if base_num then
+    tilde,cmdparams=chatcmd_parse_expect(cmdparams,"~")
+  end
+
+  cmdparams=chatcmd_parse_ws(cmdparams)
+
+  if cmdparams=="" then
+    return nil,""
+  end
+
+  local parse_cases={
+    string.match(cmdparams,"^%-?[0-9.]*e%-?[1-9][0-9]*"),
+    string.match(cmdparams,"^-?[0-9.]*"),
+    string.match(cmdparams,"^-?[1-9][0-9]*")                }
+
+  for i = 1,3 do
+    local s=parse_cases[i]
+    local parsed=tonumber(s)
+    if parsed ~= nil then
+      cmdparams=string.sub(cmdparams,#s+1)
+      if tilde then
+        parsed=base_num+parsed
+      end
+      return parsed,cmdparams
+    end
+  end
+
+  return nil,cmdparams
 end
 
 function chatcmd_parse_comma(cmdparams)
@@ -206,3 +272,4 @@ test("")
 test("  ")
 test(" ( 1     2   3 )   4,  5, 6     ")
 test("   123 456 789 111 -222 333")
+test(" 1.111 -2.22222e3 3e-2 .4 .5e2 6e-4")
