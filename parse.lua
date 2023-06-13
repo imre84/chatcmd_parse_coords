@@ -8,8 +8,10 @@
      on failure it should return nil,"remaining portion of param after failure"
      otherwise return with coords parsed and anything that is left behind in param after parsing the coords
      (therefore you can have further parameters to your chatcommand).
-     
+
      ok so first version of the code, questions, suggestions etc are welcome, also where should be this inserted as a PR?
+
+     please find the up-to-date version of the code here: aHR0cHM6Ly9naXRodWIuY29tL2ltcmU4NC9jaGF0Y21kX3BhcnNlX2Nvb3Jkcw==
 --]]
 
 -- copied from MT:
