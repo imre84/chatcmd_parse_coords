@@ -34,6 +34,7 @@ end
 
 -- until further notice proposed library functions follow:
 
+--used by _OLD code
 function is_digit(c)
   return #c == 1 and
          c >= "0" and
@@ -60,6 +61,7 @@ end
 
 --this one right now does only parse integer numbers (negative numbers and optional tilde notation included)
 --TODO: could be improved to work with non-integer numbers as well
+--_OLD* functions are not used, they serve as a drop in alternative
 function chatcmd_parse_num_OLD(cmdparams,base_num)
   local parsed=0
   local sign
@@ -222,7 +224,7 @@ function chatcmd_parse_coords(cmdparams,base_pos)
   return result,cmdparams
 end
 
--- until further notice example code to test the library functions (user code, mod code):
+-- until further notice example code to test the library functions (user code, mod code) follows:
 
 local function test0(s,base_pos)
   local output="input=\""..s.."\", output: "
